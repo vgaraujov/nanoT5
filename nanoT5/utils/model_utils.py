@@ -61,12 +61,8 @@ def get_config(args):
 
 
 def get_tokenizer(args):
-    # tokenizer = AutoTokenizer.from_pretrained(
-    #     args.model.name,
-    #     use_fast=True
-    # )
     tokenizer = AutoTokenizer.from_pretrained(
-        'vgaraujov/t5-base-spanish',
+        args.model.name,
         use_fast=True
     )
     tokenizer.model_max_length = int(1e9)
@@ -91,7 +87,8 @@ def load_dataset_splits(args):
             data_files={
                 'train': ['/workspace/dataset/train_00.txt', '/workspace/dataset/train_01.txt', '/workspace/dataset/train_02.txt'], 
                 'validation': '/workspace/dataset/valid.sent'
-            }
+            },
+            streaming=True,
         )
 
         dataset_splits = {
@@ -99,9 +96,9 @@ def load_dataset_splits(args):
             'test': dataset['validation'],
         }
 
-        assert (
-            dataset['train'].n_shards == 1024
-        ), "We want to have many shards for efficient processing with num_workes in PyTorch dataloader"
+        # assert (
+        #     dataset['train'].n_shards == 1024
+        # ), "We want to have many shards for efficient processing with num_workes in PyTorch dataloader"
     elif args.mode == 'ft':
         dataset_splits = datasets.load_dataset(
             args.data.exec_file_path,
