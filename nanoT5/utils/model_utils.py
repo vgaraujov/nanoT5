@@ -61,8 +61,12 @@ def get_config(args):
 
 
 def get_tokenizer(args):
+    # tokenizer = AutoTokenizer.from_pretrained(
+    #     args.model.name,
+    #     use_fast=True
+    # )
     tokenizer = AutoTokenizer.from_pretrained(
-        args.model.name,
+        'vgaraujov/t5-base-spanish',
         use_fast=True
     )
     tokenizer.model_max_length = int(1e9)
@@ -72,14 +76,22 @@ def get_tokenizer(args):
 
 def load_dataset_splits(args):
     if args.mode == 'pt':
-        dataset = datasets.load_dataset(
-            'c4',
-            'en',
-            streaming=True,
-        )
+        # dataset = datasets.load_dataset(
+        #     'c4',
+        #     'en',
+        #     streaming=True,
+        # )
 
-        dataset = dataset.remove_columns(
-            ['timestamp', 'url']
+        # dataset = dataset.remove_columns(
+        #     ['timestamp', 'url']
+        # )
+
+        dataset = datasets.load_dataset(
+            'text',
+            data_files={
+                'train': ['/workspace/dataset/train_00.txt', '/workspace/dataset/train_01.txt', '/workspace/dataset/train_02.txt'], 
+                'validation': '/workspace/dataset/valid.sent'
+            }
         )
 
         dataset_splits = {
